@@ -67,13 +67,7 @@ npx playwright test --ui
 npx playwright test --project=chromium
 
 ```
-Since your Docker setup is now working and successfully mapping test results to your Mac, you should update your `README.md` to highlight this. To a recruiter, this shows you aren't just a "tester"—you are an **Automation Engineer** who understands **Infrastructure as Code (IaC)**.
-
-Copy and paste the following section into your `README.md`. I’ve designed it to look clean, professional, and "resume-ready."
-
----
-
-```markdown
+**Infrastructure as Code (IaC)**.
 ## 🐳 CI/CD Simulation & Dockerization
 
 This project is fully containerized to ensure **environment parity**. By using Docker, the entire test suite executes in an isolated Linux environment that perfectly replicates a GitHub Actions or Jenkins CI/CD runner. 
