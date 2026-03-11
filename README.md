@@ -12,7 +12,7 @@ Aligned with enterprise-grade standards, this framework implements:
 * **Page Object Model (POM):** A modular architecture that separates locators (`HomePageLocators`) from action logic (`HomePage`), ensuring high maintainability and reduced technical debt.
 * **Playwright Fixtures:** Utilizes custom fixtures (e.g., `baseTest`) to provide isolated, clean state for every test, significantly reducing flakiness and setup overhead.
 * **Intelligent Test Design:** Implements high-quality automated scripts focused on critical user journeys, such as property searches and interactive listing views.
-* **CI/CD & DevOps Readiness:** Configured for **containerized execution** via Docker and optimized for **GitHub Actions** with parallel execution enabled to maximize pipeline efficiency.
+* **CI/CD & DevOps Readiness:** Configured for **containerized execution** via Docker and optimized for future development of **GitHub Actions** with parallel execution enabled to maximize pipeline efficiency.
 * **Distributed Systems Observability:** Integrated **Playwright Trace Viewer** and HTML reporting to enable deep root-cause analysis in complex cloud environments.
 
 ## Framework Architecture
