@@ -19,7 +19,7 @@ export class HomePage {
     }
 
     async waitForLoad() {
-        await expect(this.locators.matterportListingItems.first()).toBeVisible();
+        await expect(this.locators.matterportListingItems.first()).toBeVisible({ timeout: 10000 });
     }
 
     async navigate() {

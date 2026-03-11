@@ -1,0 +1,6 @@
+services:
+  test-runner:
+    build: .
+    container_name: fedemo-ci-container
+    volumes:
+      - ./test-results:/app/test-results

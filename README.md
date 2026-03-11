@@ -1,5 +1,5 @@
 # Specs
-# FEDEMOTESTs: Modern Quality Orchestration Architecture
+# FEDEMOTESTS: Modern Quality Orchestration Architecture
 
 ## Executive Summary
 
@@ -65,5 +65,45 @@ npx playwright test --ui
 
 # Run tests on a specific browser
 npx playwright test --project=chromium
+
+```
+Since your Docker setup is now working and successfully mapping test results to your Mac, you should update your `README.md` to highlight this. To a recruiter, this shows you aren't just a "tester"—you are an **Automation Engineer** who understands **Infrastructure as Code (IaC)**.
+
+Copy and paste the following section into your `README.md`. I’ve designed it to look clean, professional, and "resume-ready."
+
+---
+
+```markdown
+## 🐳 CI/CD Simulation & Dockerization
+
+This project is fully containerized to ensure **environment parity**. By using Docker, the entire test suite executes in an isolated Linux environment that perfectly replicates a GitHub Actions or Jenkins CI/CD runner. 
+
+This solves the "it works on my machine" problem and ensures 100% reproducibility across different development environments.
+
+### **Key DevOps Features**
+* **Isolation:** Tests run in a clean container, unaffected by local system configurations or bloat.
+* **Volume Mapping:** Test results, traces, and screenshots are automatically synced from the container to the host machine for local review.
+* **Headless Execution:** Pre-configured for headless browser runs, optimized for automated pipelines.
+
+### **How to Run Tests (Local CI Simulation)**
+
+1. **Prerequisites:** - Ensure [Docker Desktop](https://www.docker.com/products/docker-desktop/) is installed and running.
+
+2. **Execute the Suite:**
+   Run the following command to build the image and trigger the test run:
+   ```bash
+   docker-compose up --build
+
+```
+
+3. **View Results:**
+Once the run completes, you can find the detailed reports in the local directory:
+* **HTML Report:** Open `./test-results/index.html`
+* **Playwright Trace:** Open `./playwright-report`
+
+
+4. **Environment Cleanup:**
+```bash
+docker-compose down
 
 ```
