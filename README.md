@@ -48,7 +48,7 @@ The project structure is designed for scalability across multiple squads:
 ### Installation
 
 ```bash
-git clone https://github.com/[your-username]/fedemotests.git
+git clone https://github.com/lopiyo-git/fedemotests.git
 cd fedemotests
 yarn install
 
