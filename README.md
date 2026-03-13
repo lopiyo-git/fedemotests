@@ -1,9 +1,14 @@
 # Specs
 # FEDEMOTESTS: Modern Quality Orchestration Architecture
 
+### AI Usage
+This repository integrates **AI-Augmented Engineering** to enhance delivery velocity and ensure code consistency across the framework.
+
+* **Tooling:** **GitHub Copilot** was utilized to assist with initial boilerplate generation and repetitive configuration scaffolding.
+
 ## Executive Summary
 
-This showcase highlights a **modern quality orchestration architecture** designed to accelerate **speed-to-value** for complex, high-traffic web applications. It demonstrates a commitment to **"Shift-Left" methodologies**, **continuous testing pipelines**, and **modern QE patterns** that prioritize delivery efficiency and framework resilience.
+This showcase highlights a **modern quality orchestration architecture** designed to accelerate **speed-to-value** for complex, high-traffic web applications. It demonstrates a commitment to **continuous testing pipelines** and **modern QE patterns** that prioritize delivery efficiency and framework resilience.
 
 ## Core Technical Features
 
