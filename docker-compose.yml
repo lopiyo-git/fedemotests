@@ -2,5 +2,7 @@ services:
   test-runner:
     build: .
     container_name: fedemo-ci-container
+    environment:
+      - CI=true
     volumes:
       - ./test-results:/app/test-results

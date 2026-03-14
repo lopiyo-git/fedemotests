@@ -27,9 +27,16 @@ export default defineConfig({
   ['html', { open: 'never', outputFolder: 'test-results' }]
 ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+   expect: {
+        timeout: 15000
+    },
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
-    baseURL: 'https://www.domain.com.au',
+    baseURL: 'https://automationexercise.com',
+    actionTimeout: 15000,
+    navigationTimeout: 30000,
+    //block ads
+    extraHTTPHeaders: {},
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',

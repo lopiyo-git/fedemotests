@@ -1,6 +1,6 @@
 // pages/index.js
+export * from './NavComponent';
 export * from './HomePage';
-export * from './ListingPage';
-export * from './OwnersPage';
-export * from './AuctionResultsPage';
-export * from './SearchResultsPage';
+export * from './SignupPage.js';
+export * from './AccountCreatedPage';
+export * from './DeleteAccountPage';

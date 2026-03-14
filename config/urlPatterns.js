@@ -1,7 +1,6 @@
 // config/urlPatterns.js
 export const urlPatterns = {
-    home: /\//,
-    owners: /owners/,
-    auctionResults: /auction-results/,
-    listing: /listing/,
+    clickSignupURL: /login/,
+    deleteAccountURL: /delete_account/,
+    accountCreatedURL: /account_created/,
 };
