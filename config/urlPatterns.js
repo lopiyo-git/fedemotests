@@ -1,6 +1,10 @@
+import { sign } from "node:crypto";
+
 // config/urlPatterns.js
 export const urlPatterns = {
-    clickSignupURL: /login/,
+    homeUrl: /\/$/,
+    loginUrl: /login/,
+    signupUrl: /signup/,
     deleteAccountURL: /delete_account/,
     accountCreatedURL: /account_created/,
 };

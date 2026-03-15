@@ -1,4 +1,5 @@
 import { expect } from '@playwright/test';
+import { urlPatterns } from '../config/urlPatterns';
 
 class SignupPageLocators {
     constructor(page) {
@@ -24,7 +25,7 @@ class SignupPage {
     }
     async waitForLoad() {
         await this.page.waitForLoadState('networkidle');
-        await expect(this.page).toHaveURL(/signup/);
+        await expect(this.page).toHaveURL(urlPatterns.signupUrl);
         await expect(this.locators.signUpName).toBeVisible();
         await expect(this.locators.signUpEmail).toBeVisible();
     }

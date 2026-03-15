@@ -1,4 +1,3 @@
-// testData/users.js
 export const users = {
     validUser: {
         name: 'John Doe',

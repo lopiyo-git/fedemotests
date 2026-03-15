@@ -27,9 +27,11 @@ export default defineConfig({
   ['html', { open: 'never', outputFolder: 'test-results' }]
 ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-   expect: {
-        timeout: 15000
-    },
+  // Global timeout for a single test (30-60s is standard)
+  timeout: 60000,
+  expect: {
+      timeout: 15000 // it's a test website that can be slow at times, so we increase the default timeout for assertions to 15 seconds
+  },
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
     baseURL: 'https://automationexercise.com',

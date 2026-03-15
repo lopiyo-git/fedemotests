@@ -4,7 +4,7 @@ import { urlPatterns } from '../config/urlPatterns';
 class NavLocators {
     constructor(page) {
         this.homeLogo = page.getByRole('img', { name: 'demo website for practice' });
-        this.signUpLoginLink = page.getByRole('link', { name: ' Signup / Login' });
+        this.signUpLoginLink = page.getByRole('link', { name: /Signup \/ Login/ });
         this.logoutButton = page.getByRole('link', { name: 'Logout' });
         this.deleteAccountButton = page.getByRole('link', { name: 'Delete Account' });
     }
@@ -26,7 +26,7 @@ class NavComponent {
 
      async clickSignUpLogin() {
         await this.locators.signUpLoginLink.click();
-        await expect(this.page).toHaveURL(urlPatterns.clickSignupURL);
+        await expect(this.page).toHaveURL(urlPatterns.loginUrl);
     }
 
     async clickDeleteAccount() {
