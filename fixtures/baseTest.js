@@ -1,56 +1,112 @@
-// fixtures/baseTest.js
-import { test as base, expect } from '@playwright/test';
-import * as Pages from '../pages/';
-import { blockAds } from '../utils/blockAds';
+import { test as base, expect } from "@playwright/test";
+import * as Pages from "../pages/";
+import { blockAds } from "../utils/blockAds";
+import { ApiAuthHelper } from "../utils/ApiAuthHelper";
+import { users } from "../testData/users";
+import { paymentInfo } from "../testData/paymentInfo";
 
 export const test = base.extend({
+  // Test Data Fixtures
+  /** @type {import('../testData/users').users} */
+  userData: async ({}, use) => {
+    await use(users);
+  },
+  /** @type { paymentInfo} */
+  paymentData: async ({}, use) => {
+    await use(paymentInfo);
+  },
 
-    // Override built-in page fixture to block ads globally
-    page: async ({ page }, use) => {
-        await blockAds(page);
-        await use(page);
+  // Setup & Teardown via API
+  apiAuth: [
+    async ({ request }, use, testInfo) => {
+      // Check if the test has the @skipApiAuth tag
+      const shouldSkip =
+        testInfo.project.metadata?.skipApiAuth ||
+        testInfo.tags.includes("@skipApiAuth");
+
+      if (shouldSkip) {
+        // Provide a null or empty object so the test doesn't break if it asks for the fixture
+        await use(null);
+        return;
+      }
+
+      const apiAuth = new ApiAuthHelper(request);
+      // Clean up any leftover user from a previous failed run
+      await apiAuth
+        .deleteUserViaApi(users.validUser.email, users.validUser.password)
+        .catch((e) => console.warn("Pre-test cleanup skipped:", e.message)); // silently ignore if user doesn't exist
+      // Perform any necessary setup for API authentication here, such as logging in and storing tokens
+      await apiAuth.createUserViaApi(users.validUser);
+      await use(apiAuth);
+      // Perform any necessary cleanup after tests, such as deleting test users
+      await apiAuth
+        .deleteUserViaApi(users.validUser.email, users.validUser.password)
+        .catch((e) => console.warn("Post-test cleanup failed:", e.message));
     },
+    { auto: true },
+  ], //This makes it run automatically in tests
 
-    /** @type {NavComponent} */
-    navComponent: async ({ page }, use) => {
-        await page.goto('/');
-        const navComponent = new Pages.NavComponent(page);
-        await navComponent.waitForLoad();
-        await use(navComponent);
-    },
+  // Override built-in page fixture to block ads globally
+  page: async ({ page }, use) => {
+    await blockAds(page);
+    await use(page);
+  },
 
-    /** @type {HomePage} */
-    homePage: async ({ page }, use) => {
-        await page.goto('/');
-        const homePage = new Pages.HomePage(page);
-        await homePage.waitForLoad();
-        await use(homePage);
-    },
+  // Navigate to home and wait for page to be ready
+  navigateToHomePage: async ({ page }, use) => {
+    await page.goto("/");
+    await use(page);
+  },
 
-    /** @type {LoginPage} */
-    loginPage: async ({ page }, use) => {
-        const loginPage = new Pages.LoginPage(page);
-        await use(loginPage);
-    },
+  /** @type {NavComponent} */
+  navComponent: async ({ page }, use) => {
+    await use(new Pages.NavComponent(page));
+  },
 
-    /** @type {SignupPage} */
-    signupPage: async ({ page }, use) => {
-        const signupPage = new Pages.SignupPage(page);
-        await use(signupPage);
-    },
+  /** @type {HomePage} */
+  homePage: async ({ page }, use) => {
+    await use(new Pages.HomePage(page));
+  },
 
-    /** @type {AccountCreatedPage} */
-    accountCreatedPage: async ({ page }, use) => {
-        const accountCreatedPage = new Pages.AccountCreatedPage(page);
-        await use(accountCreatedPage);
-    },
+  /** @type {LoginPage} */
+  loginPage: async ({ page }, use) => {
+    await use(new Pages.LoginPage(page));
+  },
 
-    /** @type {DeleteAccountPage} */
-    deleteAccountPage: async ({ page }, use) => {
-        const deleteAccountPage = new Pages.DeleteAccountPage(page);
-        await use(deleteAccountPage);
-    },
+  /** @type {SignupPage} */
+  signupPage: async ({ page }, use) => {
+    await use(new Pages.SignupPage(page));
+  },
 
+  /** @type {AccountCreatedPage} */
+  accountCreatedPage: async ({ page }, use) => {
+    await use(new Pages.AccountCreatedPage(page));
+  },
+
+  /** @type {DeleteAccountPage} */
+  deleteAccountPage: async ({ page }, use) => {
+    await use(new Pages.DeleteAccountPage(page));
+  },
+
+  /** @type {Pages.ViewCartPage} */
+  viewCartPage: async ({ page }, use) => {
+    await use(new Pages.ViewCartPage(page));
+  },
+
+  /** @type {CheckoutPage} */
+  checkoutPage: async ({ page }, use) => {
+    await use(new Pages.CheckoutPage(page));
+  },
+
+  /** @type {PaymentPage} */
+  paymentPage: async ({ page }, use) => {
+    await use(new Pages.PaymentPage(page));
+  },
+
+  /** @type {OrderPlacedPage} */
+  orderPlacedPage: async ({ page }, use) => {
+    await use(new Pages.OrderPlacedPage(page));
+  },
 });
 
 export { expect };
