@@ -107,6 +107,59 @@ export const test = base.extend({
   orderPlacedPage: async ({ page }, use) => {
     await use(new Pages.OrderPlacedPage(page));
   },
+
+  /**
+   * Bundled fixture — all page objects and test data in one place.
+   * Keeps test signatures concise without losing individual fixture reusability.
+   *
+   * @type {{
+   *   nav: NavComponent,
+   *   home: HomePage,
+   *   login: LoginPage,
+   *   signup: SignupPage,
+   *   accountCreated: AccountCreatedPage,
+   *   deleteAccount: DeleteAccountPage,
+   *   cart: Pages.ViewCartPage,
+   *   checkout: CheckoutPage,
+   *   payment: PaymentPage,
+   *   orderPlaced: OrderPlacedPage,
+   *   userData: import('../testData/users').users,
+   *   paymentData: paymentInfo,
+   * }}
+   */
+  pages: async (
+    {
+      page,
+      navComponent,
+      homePage,
+      loginPage,
+      signupPage,
+      accountCreatedPage,
+      deleteAccountPage,
+      viewCartPage,
+      checkoutPage,
+      paymentPage,
+      orderPlacedPage,
+      userData,
+      paymentData,
+    },
+    use,
+  ) => {
+    await use({
+      nav: navComponent,
+      home: homePage,
+      login: loginPage,
+      signup: signupPage,
+      accountCreated: accountCreatedPage,
+      deleteAccount: deleteAccountPage,
+      cart: viewCartPage,
+      checkout: checkoutPage,
+      payment: paymentPage,
+      orderPlaced: orderPlacedPage,
+      userData,
+      paymentData,
+    });
+  },
 });
 
 export { expect };
