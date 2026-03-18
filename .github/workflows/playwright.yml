@@ -19,6 +19,8 @@ jobs:
     name: Run Playwright Tests (${{ github.event.inputs.browser }})
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true  # opt into Node 24 for all steps
 
     steps:
       - name: Checkout repository
@@ -27,7 +29,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
           cache: "npm"
 
       - name: Install dependencies
