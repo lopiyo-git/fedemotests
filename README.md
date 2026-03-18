@@ -1,5 +1,7 @@
 # FEDEMOTESTS: Modern Quality Orchestration Architecture
 
+![Playwright Tests](https://github.com/lopiyo-git/fedemotests/actions/workflows/playwright.yml/badge.svg)
+
 ### AI Usage
 
 This repository integrates **AI-Augmented Engineering** to enhance delivery velocity and ensure code consistency across the framework.
@@ -17,7 +19,7 @@ Aligned with enterprise-grade standards, this framework implements:
 - **Two-Class Page Object Model (POM):** A refined architecture that strictly separates **Locators** from **Action logic** within the same file, ensuring high maintainability.
 - **Playwright Fixtures:** Utilizes custom fixtures (`baseTest.js`) for dependency injection, providing an isolated, clean state for every test and reducing setup overhead.
 - **Idempotent Test Design:** Implemented end-to-end (E2E) user lifecycles (Registration → Navigation → Deletion) that handle their own data cleanup.
-- **CI/CD & DevOps Readiness:** Fully containerized via **Docker Compose** with environment-specific configurations (`CI=true`) for pipeline parity.
+- **CI/CD & DevOps Readiness:** Integrated with GitHub Actions for automated regression on every push/PR, alongside a local Docker Compose workflow for environment parity.
 
 ## Framework Architecture
 
@@ -101,6 +103,22 @@ docker compose down --rmi all && docker compose up --build
 
 - **HTML Report:** Open `./test-results/index.html`
 - **Traces:** Traces are saved to `./playwright-report` for post-mortem analysis.
+
+## 🚀 Continuous Integration (GitHub Actions)
+
+The framework is configured with a native GitHub Actions workflow (`playwright.yml`) to ensure high-velocity feedback loops.
+
+### **Workflow Trigger Logic**
+
+- **Push/Pull Requests:** Automatically triggers on `main` and `master` branches.
+- **Scheduled Runs:** Configured to run daily to detect environmental flakiness or site changes.
+
+### **Pipeline Stages**
+
+1. **Environment Setup:** Leverages `npm ci` and Node.js 24 for deterministic dependency locking and execution parity.
+2. **On-Demand Provisioning:** Dynamically installs the required Playwright browser binaries (Chromium, Firefox, or WebKit) and OS-level dependencies.
+3. **Parametrized Execution:** Supports targeted project runs via `workflow_dispatch`, allowing manual selection of browser engines for specific regression needs.
+4. **Artifact Retention:** Automatically captures and stores HTML reports and failure traces for 14 days to facilitate post-mortem analysis.
 
 ---
 
