@@ -64,7 +64,7 @@ test.describe("demo tests for automation exercises website", () => {
         validUser.email,
       );
       await signup.waitForLoad();
-      await signup.enterSignUpInformation(validUser.validUser);
+      await signup.enterSignUpInformation(validUser);
       await signup.clickCreateAccount();
       await accountCreated.waitForLoad();
       await accountCreated.clickContinue();
