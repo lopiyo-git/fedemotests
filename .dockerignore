@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# Test results and reports
+test-results/
+playwright-report/
+.cache/
+
+# Git
+.git/
+.github/
+.gitignore
+
+# Environment and config
+.env
+.env.*
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OpenCode
+opencode.json
+
+# Markdown docs
+*.md
+
+# Editor & OS Clutter
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
