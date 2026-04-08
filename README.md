@@ -119,6 +119,7 @@ The framework is configured with a native GitHub Actions workflow (`playwright.y
 2. **On-Demand Provisioning:** Dynamically installs the required Playwright browser binaries (Chromium, Firefox, or WebKit) and OS-level dependencies.
 3. **Parametrized Execution:** Supports targeted browser regression (Chromium, Firefox, WebKit, or All) via workflow_dispatch, featuring a mandatory Security Orchestration gatekeeper for vulnerability and secret detection.
 4. **Artifact Retention:** Automatically captures and stores HTML reports and failure traces for 14 days to facilitate post-mortem analysis.
+5. **Containerized Orchestration:** Executes the functional test suite within a security-hardened Docker container via docker-compose, guaranteeing 1:1 environment parity and eliminating "it works on my machine" flakiness.
 
 ---
 

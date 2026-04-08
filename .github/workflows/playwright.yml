@@ -62,41 +62,43 @@ jobs:
   test:
     name: Run Playwright Tests (${{ github.event.inputs.browser }})
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     needs: security-scan
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "24"
-          cache: "npm"
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright browsers
+      - name: Run Tests in Docker Container
         run: |
+          # Use the input browser to override the default CMD if necessary
           if [ "${{ github.event.inputs.browser }}" = "all" ]; then
-            npx playwright install --with-deps
+            docker compose run --rm --remove-orphans test-runner npx playwright test
           else
-            npx playwright install --with-deps ${{ github.event.inputs.browser }}
-          fi
-
-      - name: Run Playwright tests
-        run: |
-          if [ "${{ github.event.inputs.browser }}" = "all" ]; then
-            npx playwright test
-          else
-            npx playwright test --project=${{ github.event.inputs.browser }}
+            docker compose run --rm --remove-orphans test-runner npx playwright test --project=${{ github.event.inputs.browser }}
           fi
         env:
           CI: true
+          COMPOSE_DOCKER_CLI_BUILD: 1
+          DOCKER_BUILDKIT: 1
+
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Playwright Test Results
+          path: 'test-results/**/*.xml'
+          reporter: 'junit'
+
+      - name: Publish HTML Report
+        uses: peaceiris/actions-gh-pages@v3
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./playwright-report
 
       - name: Upload HTML report
         uses: actions/upload-artifact@v4
