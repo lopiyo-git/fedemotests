@@ -76,6 +76,11 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Create output directories
+        run: |
+          mkdir -p test-results playwright-report
+          chmod -R 777 test-results playwright-report
+
       - name: Run Tests in Docker Container
         run: |
           if [ "${{ github.event.inputs.browser }}" = "all" ]; then
