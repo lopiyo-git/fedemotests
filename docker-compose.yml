@@ -6,3 +6,5 @@ services:
       - CI=true
     volumes:
       - ./test-results:/app/test-results
+      - ./playwright-report:/app/playwright-report # add this to capture reports locally
+    user: "1000:1000" # pwuser's uid:gid in the Playwright base image

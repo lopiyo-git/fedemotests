@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 # Install dependencies
-RUN yarn install --frozen-lockfile --non-interactive
+RUN npm ci
 
 # Copy project files
 COPY . .
