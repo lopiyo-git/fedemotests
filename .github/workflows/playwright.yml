@@ -15,12 +15,57 @@ on:
           - all
 
 jobs:
+  security-scan:
+    name: Security Scanning
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Dependency vulnerability scan
+        run: npm audit --audit-level=high
+
+      - name: Scan for secrets
+        run: |
+          curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.18.4/gitleaks_8.18.4_linux_x64.tar.gz | tar -xz
+          ./gitleaks detect --source . --verbose
+
+      - name: Initialize CodeQL
+        if: ${{ !env.ACT }}
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run CodeQL analysis
+        if: ${{ !env.ACT }}
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:javascript"
+          token: ${{ secrets.GITHUB_TOKEN }}
+
   test:
     name: Run Playwright Tests (${{ github.event.inputs.browser }})
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    needs: security-scan
     env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true  # opt into Node 24 for all steps
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - name: Checkout repository
@@ -55,7 +100,7 @@ jobs:
 
       - name: Upload HTML report
         uses: actions/upload-artifact@v4
-        if: always() # upload even on test failure so you can inspect results
+        if: always()
         with:
           name: playwright-report-${{ github.event.inputs.browser }}
           path: test-results/

@@ -5,7 +5,7 @@ FROM mcr.microsoft.com/playwright:v1.58.2-jammy
 WORKDIR /app
 
 # Copy dependency files first for better caching
-COPY package.json yarn.lock ./
+COPY package.json package-lock.json ./
 
 # Install dependencies
 RUN yarn install --frozen-lockfile --non-interactive
