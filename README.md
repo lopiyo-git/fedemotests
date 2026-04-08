@@ -111,14 +111,13 @@ The framework is configured with a native GitHub Actions workflow (`playwright.y
 
 ### **Workflow Trigger Logic**
 
-- **Push/Pull Requests:** Automatically triggers on `main` and `master` branches.
-- **Scheduled Runs:** Configured to run daily to detect environmental flakiness or site changes.
+- **Manual On-Demand Execution:** Utilizes workflow_dispatch to allow engineers to manually trigger the suite from the GitHub Actions tab.
 
 ### **Pipeline Stages**
 
 1. **Environment Setup:** Leverages `npm ci` and Node.js 24 for deterministic dependency locking and execution parity.
 2. **On-Demand Provisioning:** Dynamically installs the required Playwright browser binaries (Chromium, Firefox, or WebKit) and OS-level dependencies.
-3. **Parametrized Execution:** Supports targeted project runs via `workflow_dispatch`, allowing manual selection of browser engines for specific regression needs.
+3. **Parametrized Execution:** Supports targeted browser regression (Chromium, Firefox, WebKit, or All) via workflow_dispatch, featuring a mandatory Security Orchestration gatekeeper for vulnerability and secret detection.
 4. **Artifact Retention:** Automatically captures and stores HTML reports and failure traces for 14 days to facilitate post-mortem analysis.
 
 ---
