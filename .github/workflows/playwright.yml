@@ -64,6 +64,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     needs: security-scan
+    permissions:
+      contents: write   # required for gh-pages publish
+      checks: write     # required for dorny/test-reporter
+      pull-requests: write
 
     steps:
       - name: Checkout repository
@@ -74,7 +78,6 @@ jobs:
 
       - name: Run Tests in Docker Container
         run: |
-          # Use the input browser to override the default CMD if necessary
           if [ "${{ github.event.inputs.browser }}" = "all" ]; then
             docker compose run --rm --remove-orphans test-runner npx playwright test
           else
@@ -89,9 +92,10 @@ jobs:
         uses: dorny/test-reporter@v1
         if: always()
         with:
-          name: Playwright Test Results
+          name: Playwright Test Results (${{ github.event.inputs.browser }})
           path: 'test-results/**/*.xml'
-          reporter: 'junit'
+          reporter: 'java-junit'   
+          fail-on-error: false     # don't fail the job if no report files found
 
       - name: Publish HTML Report
         uses: peaceiris/actions-gh-pages@v3
@@ -99,11 +103,15 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./playwright-report
+          destination_dir: playwright-report  # avoids overwriting root gh-pages content
+          keep_files: true                    # preserves previous reports
 
       - name: Upload HTML report
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report-${{ github.event.inputs.browser }}
-          path: test-results/
+          path: |
+            playwright-report/
+            test-results/
           retention-days: 14
