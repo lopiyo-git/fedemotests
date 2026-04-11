@@ -1,9 +1,9 @@
-import { test, expect } from "../fixtures/baseTest";
+import { test, expect } from "../../fixtures/baseTest";
 
 test.describe("demo tests for automation exercises website", () => {
   test("Complete checkout flow for authenticated user", async ({
     navigateToHomePage: _navigation,
-    pages,
+    fixtures,
   }) => {
     const {
       nav,
@@ -15,7 +15,7 @@ test.describe("demo tests for automation exercises website", () => {
       orderPlaced,
       userData,
       paymentData,
-    } = pages;
+    } = fixtures;
     const { validUser } = userData;
 
     //user signed up via api and account deleted via api
@@ -44,7 +44,7 @@ test.describe("demo tests for automation exercises website", () => {
   test(
     "Full user registration and account deletion journey",
     { tag: "@skipApiAuth" },
-    async ({ navigateToHomePage: _navigation, pages }) => {
+    async ({ navigateToHomePage: _navigation, fixtures }) => {
       const {
         nav,
         home,
@@ -53,7 +53,7 @@ test.describe("demo tests for automation exercises website", () => {
         accountCreated,
         deleteAccount,
         userData,
-      } = pages;
+      } = fixtures;
 
       const { validUser } = userData;
 

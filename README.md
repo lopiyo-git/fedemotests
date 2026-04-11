@@ -1,3 +1,4 @@
+````markdown
 # FEDEMOTESTS: Modern Quality Orchestration Architecture
 
 ![Playwright Tests](https://github.com/lopiyo-git/fedemotests/actions/workflows/playwright.yml/badge.svg)
@@ -24,18 +25,34 @@ Aligned with enterprise-grade standards, this framework implements:
 
 ## Framework Architecture
 
-The structure follows a modular "Squad-ready" design:
+The structure follows a modular "Squad-ready" design with a clear separation between API and browser test concerns:
 
 ```text
-├── config/               # Centralized URL patterns and constants
-├── testData/             # Dynamic JS objects for user profiles and environment data
-├── pages/                # POM implementation (Actions + Locators separation)
-├── specs/                # Automated scripts (e.g., automationDemo.spec.js)
-├── fixtures/             # baseTest.js for advanced dependency injection
-├── playwright.config.js  # Enterprise browser and CI/CD configuration
-└── Dockerfile            # Containerization for environment parity
-
+├── .github/
+│   └── workflows/
+│       └── playwright.yml         # GitHub Actions CI/CD pipeline definition
+├── config/                        # Centralised URL patterns and constants
+├── testData/                      # Dynamic JS objects for user profiles and payment data
+├── pages/                         # POM implementation (Actions + Locators separation)
+├── fixtures/                      # baseTest.js for advanced dependency injection
+├── utils/                         # Shared helpers e.g. ApiAuthHelper, blockAds
+├── tests/
+│   ├── api/                       # API-only tests — run once, no browser required
+│   │   └── users.api.spec.js      # User lifecycle API tests (create, delete, update, get)
+│   └── browser/                   # Browser-based E2E tests — run per configured browser
+│       └── automationDemo.spec.js # End-to-end UI journey tests
+├── playwright.config.js           # Browser projects + API project configuration
+├── docker-compose.yml             # Local CI simulation via Docker
+└── Dockerfile                     # Containerisation for environment parity
 ```
+````
+
+### Project Configuration
+
+The Playwright config defines separate projects to ensure API tests run **once** while browser tests run across all configured browsers:
+
+- **`api` project** — targets `tests/api/` with no browser device, runs once per pipeline execution
+- **`chromium`, `firefox`, `webkit` projects** — target `tests/browser/` only, each runs the full UI suite
 
 ## Key Engineering Patterns
 
@@ -45,9 +62,9 @@ The structure follows a modular "Squad-ready" design:
 
 ## Technical Challenges Solved
 
-- **Network-Level Ad-Blocking:** Implemented request interception in `baseTest.js` to abort domains like `googlesyndication.com` and `doubleclick.net`. This eliminated external flakiness and improved execution speed by **~20%**.
-- **Environment Parity:** engineered a Dockerized workflow to solve the "it works on my machine" problem, replicating the exact Linux environment used in production CI runners.
-- **Asynchronous Stability:** Leveraged Playwright’s **auto-waiting** logic to handle dynamic React-based content transitions.
+- **Network-Level Ad-Blocking:** Implemented request interception in `baseTest.js` to abort domains like `googlesyndication.com` and `doubleclick.net`. This eliminated external flakiness and improves execution speed.
+- **Environment Parity:** Engineered a Dockerized workflow to solve the "it works on my machine" problem, replicating the exact Linux environment used in production CI runners.
+- **Asynchronous Stability:** Leveraged Playwright's **auto-waiting** logic to handle dynamic React-based content transitions.
 
 ---
 
@@ -64,18 +81,22 @@ The structure follows a modular "Squad-ready" design:
 git clone https://github.com/lopiyo-git/fedemotests.git
 cd fedemotests
 yarn install
-
 ```
 
 ### Running Tests (Local)
 
 ```bash
-# Standard headless run
+# Run all tests (API + all browsers)
 npx playwright test
+
+# Run API tests only
+npx playwright test --project=api
+
+# Run browser tests only (all browsers)
+npx playwright test --project=chromium --project=firefox --project=webkit
 
 # Interactive UI mode
 npx playwright test --ui
-
 ```
 
 ## 🐳 CI/CD Simulation (Docker)
@@ -88,7 +109,6 @@ To build the image and trigger a clean test run:
 
 ```bash
 docker-compose up --build
-
 ```
 
 ### **Perform a "Deep Clean"**
@@ -97,7 +117,6 @@ If you update dependencies or environment variables, use this to nuke the cache 
 
 ```bash
 docker compose down --rmi all && docker compose up --build
-
 ```
 
 ### **View Results**
@@ -107,19 +126,19 @@ docker compose down --rmi all && docker compose up --build
 
 ## 🚀 Continuous Integration (GitHub Actions)
 
-The framework is configured with a native GitHub Actions workflow (`playwright.yml`) to ensure high-velocity feedback loops.
+The framework is configured with a native GitHub Actions workflow (`.github/workflows/playwright.yml`) to ensure high-velocity feedback loops.
 
 ### **Workflow Trigger Logic**
 
-- **Manual On-Demand Execution:** Utilizes workflow_dispatch to allow engineers to manually trigger the suite from the GitHub Actions tab.
+- **Manual On-Demand Execution:** Utilises `workflow_dispatch` to allow engineers to manually trigger the suite from the GitHub Actions tab.
 
 ### **Pipeline Stages**
 
 1. **Environment Setup:** Leverages `npm ci` and Node.js 24 for deterministic dependency locking and execution parity.
 2. **On-Demand Provisioning:** Dynamically installs the required Playwright browser binaries (Chromium, Firefox, or WebKit) and OS-level dependencies.
-3. **Parametrized Execution:** Supports targeted browser regression (Chromium, Firefox, WebKit, or All) via workflow_dispatch, featuring a mandatory Security Orchestration gatekeeper for vulnerability and secret detection.
+3. **Parametrised Execution:** Supports targeted api and browser regression (api, Chromium, Firefox, WebKit, or All) via `workflow_dispatch`, featuring a mandatory Security Orchestration gatekeeper for vulnerability and secret detection.
 4. **Artifact Retention:** Automatically captures and stores HTML reports and failure traces for 14 days to facilitate post-mortem analysis.
-5. **Containerized Orchestration:** Executes the functional test suite within a security-hardened Docker container via docker-compose, guaranteeing 1:1 environment parity and eliminating "it works on my machine" flakiness.
+5. **Containerised Orchestration:** Executes the functional test suite within a security-hardened Docker container via docker-compose, guaranteeing 1:1 environment parity and eliminating "it works on my machine" flakiness.
 
 ---
 
@@ -130,3 +149,7 @@ For inquiries regarding this framework or professional opportunities, please rea
 [![Email](https://img.shields.io/badge/Email-lopiyo14%40gmail.com-D14836?style=flat-square&logo=gmail&logoColor=white)](mailto:lopiyo14@gmail.com)
 
 **Author:** [lopiyo-git](https://github.com/lopiyo-git)
+
+```
+
+```

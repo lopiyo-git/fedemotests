@@ -41,20 +41,29 @@ export default defineConfig({
     trace: "on-first-retry",
   },
 
-  /* Configure projects for major browsers */
+  /* Configure projects here*/
   projects: [
+    // API tests — run once, no browser
+    {
+      name: "api",
+      testMatch: "**/tests/api/**/*.spec.js",
+      use: {}, // no browser device
+    },
+
+    // Browser tests — run for each browser
     {
       name: "chromium",
+      testMatch: "**/tests/browser/**/*.spec.js",
       use: { ...devices["Desktop Chrome"] },
     },
-
     {
       name: "firefox",
+      testMatch: "**/tests/browser/**/*.spec.js",
       use: { ...devices["Desktop Firefox"] },
     },
-
     {
       name: "webkit",
+      testMatch: "**/tests/browser/**/*.spec.js",
       use: { ...devices["Desktop Safari"] },
     },
   ],

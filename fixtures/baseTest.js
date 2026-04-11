@@ -16,8 +16,8 @@ export const test = base.extend({
     await use(paymentInfo);
   },
 
-  // Setup & Teardown via API
-  apiAuth: [
+  // Setup & Teardown via API if test requires a registered user, otherwise skip API auth setup
+  registeredUser: [
     async ({ request }, use, testInfo) => {
       // Check if the test has the @skipApiAuth tag
       const shouldSkip =
@@ -45,6 +45,13 @@ export const test = base.extend({
     },
     { auto: true },
   ], //This makes it run automatically in tests
+
+  //an API to handle user creation and deletion via API, can be used directly in tests if needed for more complex scenarios
+  // or to avoid the overhead of the full registeredUser fixture setup/teardown when not necessary.
+  apiUser: async ({ request }, use) => {
+    const apiAuth = new ApiAuthHelper(request);
+    await use(apiAuth);
+  },
 
   // Override built-in page fixture to block ads globally
   page: async ({ page }, use) => {
@@ -127,8 +134,10 @@ export const test = base.extend({
    *   paymentData: paymentInfo,
    * }}
    */
-  pages: async (
+  fixtures: async (
     {
+      registeredUser,
+      apiUser,
       page,
       navComponent,
       homePage,
@@ -146,6 +155,8 @@ export const test = base.extend({
     use,
   ) => {
     await use({
+      apiUser: apiUser,
+      registeredUser: registeredUser,
       nav: navComponent,
       home: homePage,
       login: loginPage,

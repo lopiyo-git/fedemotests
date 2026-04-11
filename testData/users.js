@@ -11,4 +11,27 @@ export const users = {
     zipcode: "2000",
     mobileNumber: "0412345678",
   },
+  userWithInvalidEmail: {
+    email: "invalidemail.x.y.z", // Invalid email format
+    password: "Password123!",
+    firstName: "John",
+    lastName: "Doe",
+    address: "123 Main St, Anytown, Australia",
+    country: "Australia",
+    state: "New South Wales",
+    city: "Sydney",
+    zipcode: "2000",
+    mobileNumber: "0412345678",
+  },
+  userWithMissingFields: {
+    password: "Password123!",
+    firstName: "John",
+    lastName: "Doe",
+    address: "123 Main St, Anytown, Australia",
+    country: "Australia",
+    state: "New South Wales",
+    city: "Sydney",
+    zipcode: "2000",
+    mobileNumber: "0412345678",
+  },
 };
