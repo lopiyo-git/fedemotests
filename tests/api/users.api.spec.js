@@ -94,36 +94,41 @@ test.describe("Users API", () => {
       expect(response.message).toBe("User not found!");
     });
 
-    test("User-Login: POST login with non-existent email should fail", async ({
-      registeredUser,
-    }) => {
-      const response = await registeredUser.loginViaApi("", "somepassword", {
-        throwOnError: false,
-      });
+    test(
+      "User-Login: POST login with non-existent email should fail",
+      { tag: "@skipApiAuth" },
+      async ({ apiUser }) => {
+        const response = await apiUser.loginViaApi(
+          "nonexistent@example.com",
+          "somepassword",
+          {
+            throwOnError: false,
+          },
+        );
 
-      expect(response.responseCode).toBe(404);
-      expect(response.message).toContain("User not found!");
-    });
+        expect(response.responseCode).toBe(404);
+        expect(response.message).toContain("User not found!");
+      },
+    );
 
-    test("User-Login: POST Deleted user cannot login", async ({
-      registeredUser,
-      userData,
-    }) => {
-      const { validUser } = userData;
-      await registeredUser.deleteUserViaApi(
-        validUser.email,
-        validUser.password,
-      );
-      const response = await registeredUser.loginViaApi(
-        validUser.email,
-        validUser.password,
-        {
-          throwOnError: false,
-        },
-      );
-      expect(response.responseCode).toBe(404);
-      expect(response.message).toContain("User not found!");
-    });
+    test(
+      "User-Login: POST Deleted user cannot login",
+      { tag: "@skipApiAuth" },
+      async ({ apiUser, userData }) => {
+        const { validUser } = userData;
+        await apiUser.createUserViaApi(validUser);
+        await apiUser.deleteUserViaApi(validUser.email, validUser.password);
+        const response = await apiUser.loginViaApi(
+          validUser.email,
+          validUser.password,
+          {
+            throwOnError: false,
+          },
+        );
+        expect(response.responseCode).toBe(404);
+        expect(response.message).toContain("User not found!");
+      },
+    );
   });
 
   test.describe("User-Get", () => {
@@ -165,6 +170,26 @@ test.describe("Users API", () => {
         },
       });
     });
+
+    test(
+      "User-Get: GET user account details by email should fail after account deletion",
+      { tag: "@skipApiAuth" },
+      async ({ apiUser, userData }) => {
+        const { validUser } = userData;
+        await apiUser.createUserViaApi(validUser);
+        await apiUser.deleteUserViaApi(validUser.email, validUser.password);
+        const response = await apiUser.getUserAccountDetailByEmail(
+          validUser.email,
+          {
+            throwOnError: false,
+          },
+        );
+        expect(response.responseCode).toBe(404);
+        expect(response.message).toContain(
+          "Account not found with this email, try another email!",
+        );
+      },
+    );
   });
 
   test.describe("User-Delete", () => {
