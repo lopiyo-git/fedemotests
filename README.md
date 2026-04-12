@@ -45,8 +45,6 @@ The structure follows a modular "Squad-ready" design with a clear separation bet
 └── Dockerfile                     # Containerisation for environment parity
 ```
 
-````
-
 ### Project Configuration
 
 The Playwright config defines separate projects to ensure API tests run **once** while browser tests run across all configured browsers:
@@ -149,6 +147,3 @@ For inquiries regarding this framework or professional opportunities, please rea
 [![Email](https://img.shields.io/badge/Email-lopiyo14%40gmail.com-D14836?style=flat-square&logo=gmail&logoColor=white)](mailto:lopiyo14@gmail.com)
 
 **Author:** [lopiyo-git](https://github.com/lopiyo-git)
-
-```
-````
