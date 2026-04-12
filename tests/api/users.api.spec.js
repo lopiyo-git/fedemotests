@@ -4,9 +4,8 @@ test.describe("Users API", () => {
   test.describe("User-Create", () => {
     test(
       "User-Create: POST register user account with valid details then delete account via API",
-      { tag: "@skipApiAuth" },
-      async ({ userData, apiUser }) => {
-        const { validUser } = userData;
+      { tag: "@skipUserRegistration" },
+      async ({ userData: { validUser }, apiUser }) => {
         let deleteUserResponse;
         let createUserResponse;
 
@@ -27,10 +26,8 @@ test.describe("Users API", () => {
 
     test(
       "User-Create: POST create user with missing required email field should fail",
-      { tag: "@skipApiAuth" },
-      async ({ userData, apiUser }) => {
-        const { userWithMissingFields } = userData;
-
+      { tag: "@skipUserRegistration" },
+      async ({ userData: { userWithMissingFields }, apiUser }) => {
         const createUserResponse = await apiUser.createUserViaApi(
           userWithMissingFields,
           {
@@ -46,10 +43,9 @@ test.describe("Users API", () => {
 
     test("User-Create: POST create/register user account with duplicate email should fail", async ({
       registeredUser,
-      userData,
+      userData: { validUser },
     }) => {
       // registered User was already created by the fixture!
-      const { validUser } = userData;
       const response = await registeredUser.createUserViaApi(validUser, {
         throwOnError: false,
       });
@@ -65,10 +61,9 @@ test.describe("Users API", () => {
   test.describe("User-Update", () => {
     test("User-Update: POST user account can be updated", async ({
       registeredUser,
-      userData,
+      userData: { validUser },
     }) => {
       // registered User was already created by the fixture!
-      const { validUser } = userData;
       validUser.firstName = "UpdatedFirstName";
       validUser.address = "42 Wallaby Way, Sydney";
 
@@ -97,10 +92,9 @@ test.describe("Users API", () => {
   test.describe("User-Login", () => {
     test("User-Login: POST login with valid credentials should succeed", async ({
       registeredUser,
-      userData,
+      userData: { validUser },
     }) => {
       // registered User was already created by the fixture!
-      const { validUser } = userData;
       const response = await registeredUser.loginViaApi(
         validUser.email,
         validUser.password,
@@ -111,10 +105,9 @@ test.describe("Users API", () => {
 
     test("User-Login: POST login with invalid credentials should fail", async ({
       registeredUser,
-      userData,
+      userData: { validUser },
     }) => {
       // registered User was already created by the fixture!
-      const { validUser } = userData;
       const response = await registeredUser.loginViaApi(
         validUser.email,
         "wrongpassword",
@@ -128,7 +121,7 @@ test.describe("Users API", () => {
 
     test(
       "User-Login: POST login with non-existent email should fail",
-      { tag: "@skipApiAuth" },
+      { tag: "@skipUserRegistration" },
       async ({ apiUser }) => {
         const response = await apiUser.loginViaApi(
           "nonexistent@example.com",
@@ -145,9 +138,8 @@ test.describe("Users API", () => {
 
     test(
       "User-Login: POST Deleted user cannot login",
-      { tag: "@skipApiAuth" },
-      async ({ apiUser, userData }) => {
-        const { validUser } = userData;
+      { tag: "@skipUserRegistration" },
+      async ({ apiUser, userData: { validUser } }) => {
         await apiUser.createUserViaApi(validUser);
         await apiUser.deleteUserViaApi(validUser.email, validUser.password);
         const response = await apiUser.loginViaApi(
@@ -182,10 +174,9 @@ test.describe("Users API", () => {
 
     test("User-Get: Verify account details after registration", async ({
       registeredUser,
-      userData,
+      userData: { validUser },
     }) => {
       // registered User was already created by the fixture!
-      const { validUser } = userData;
       const getUserResponse = await registeredUser.getUserAccountDetailByEmail(
         validUser.email,
       );
@@ -205,9 +196,8 @@ test.describe("Users API", () => {
 
     test(
       "User-Get: GET user account details by email should fail after account deletion",
-      { tag: "@skipApiAuth" },
-      async ({ apiUser, userData }) => {
-        const { validUser } = userData;
+      { tag: "@skipUserRegistration" },
+      async ({ apiUser, userData: { validUser } }) => {
         await apiUser.createUserViaApi(validUser);
         await apiUser.deleteUserViaApi(validUser.email, validUser.password);
         const response = await apiUser.getUserAccountDetailByEmail(
@@ -227,9 +217,8 @@ test.describe("Users API", () => {
   test.describe("User-Delete", () => {
     test("User-Delete: DELETE user with invalid password should fail", async ({
       registeredUser,
-      userData,
+      userData: { validUser },
     }) => {
-      const { validUser } = userData;
       const deleteResponse = await registeredUser.deleteUserViaApi(
         validUser.email,
         "wrongpassword",
@@ -243,7 +232,7 @@ test.describe("Users API", () => {
 
     test(
       "User-Delete: DELETE non-existent user should fail",
-      { tag: "@skipApiAuth" },
+      { tag: "@skipUserRegistration" },
       async ({ apiUser }) => {
         const deleteResponse = await apiUser.deleteUserViaApi(
           "nonexistent@example.com",

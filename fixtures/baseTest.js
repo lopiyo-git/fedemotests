@@ -22,7 +22,7 @@ export const test = base.extend({
       // Check if the test has the @skipApiAuth tag
       const shouldSkip =
         testInfo.project.metadata?.skipApiAuth ||
-        testInfo.tags.includes("@skipApiAuth");
+        testInfo.tags.includes("@skipUserRegistration");
 
       if (shouldSkip) {
         // Provide a null or empty object so the test doesn't break if it asks for the fixture

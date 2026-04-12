@@ -13,12 +13,11 @@ test.describe("demo tests for automation exercises website", () => {
       checkout,
       payment,
       orderPlaced,
-      userData,
+      userData: { validUser },
       paymentData,
     } = fixtures;
-    const { validUser } = userData;
 
-    //user signed up via api and account deleted via api
+    //user registered via api and account deleted via api
     await nav.clickSignUpLogin();
     await login.waitForLoad();
     await login.login(validUser.email, validUser.password);
@@ -43,7 +42,7 @@ test.describe("demo tests for automation exercises website", () => {
 
   test(
     "Full user registration and account deletion journey",
-    { tag: "@skipApiAuth" },
+    { tag: "@skipUserRegistration" },
     async ({ navigateToHomePage: _navigation, fixtures }) => {
       const {
         nav,
@@ -52,10 +51,8 @@ test.describe("demo tests for automation exercises website", () => {
         signup,
         accountCreated,
         deleteAccount,
-        userData,
+        userData: { validUser },
       } = fixtures;
-
-      const { validUser } = userData;
 
       await nav.clickSignUpLogin();
       await login.waitForLoad();
