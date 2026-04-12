@@ -1,4 +1,3 @@
-````markdown
 # FEDEMOTESTS: Modern Quality Orchestration Architecture
 
 ![Playwright Tests](https://github.com/lopiyo-git/fedemotests/actions/workflows/playwright.yml/badge.svg)
@@ -45,6 +44,7 @@ The structure follows a modular "Squad-ready" design with a clear separation bet
 ├── docker-compose.yml             # Local CI simulation via Docker
 └── Dockerfile                     # Containerisation for environment parity
 ```
+
 ````
 
 ### Project Configuration
@@ -151,5 +151,4 @@ For inquiries regarding this framework or professional opportunities, please rea
 **Author:** [lopiyo-git](https://github.com/lopiyo-git)
 
 ```
-
-```
+````
