@@ -9,16 +9,16 @@ export const test = base.extend({
   // Test Data Fixtures
   /** @type {import('../testData/users').users} */
   userData: async ({}, use) => {
-    await use(users);
+    await use(JSON.parse(JSON.stringify(users))); // fresh deep copy per test
   },
   /** @type { paymentInfo} */
   paymentData: async ({}, use) => {
-    await use(paymentInfo);
+    await use(JSON.parse(JSON.stringify(paymentInfo))); // fresh deep copy per test
   },
 
   // Setup & Teardown via API if test requires a registered user, otherwise skip API auth setup
   registeredUser: [
-    async ({ request }, use, testInfo) => {
+    async ({ request, userData }, use, testInfo) => {
       // Check if the test has the @skipApiAuth tag
       const shouldSkip =
         testInfo.project.metadata?.skipApiAuth ||
@@ -33,14 +33,14 @@ export const test = base.extend({
       const apiAuth = new ApiAuthHelper(request);
       // Clean up any leftover user from a previous failed run
       await apiAuth
-        .deleteUserViaApi(users.validUser.email, users.validUser.password)
+        .deleteUserViaApi(userData.validUser.email, userData.validUser.password)
         .catch((e) => console.warn("Pre-test cleanup skipped:", e.message)); // Silently ignore if user doesn't exist.
       // Perform any necessary setup for API authentication here, such as logging in and storing tokens.
-      await apiAuth.createUserViaApi(users.validUser);
+      await apiAuth.createUserViaApi(userData.validUser);
       await use(apiAuth);
       // Perform any necessary cleanup after tests, such as deleting test users.
       await apiAuth
-        .deleteUserViaApi(users.validUser.email, users.validUser.password)
+        .deleteUserViaApi(userData.validUser.email, userData.validUser.password)
         .catch((e) => console.warn("Post-test cleanup failed:", e.message));
     },
     { auto: true },

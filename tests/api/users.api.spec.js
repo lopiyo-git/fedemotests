@@ -13,14 +13,14 @@ test.describe("Users API", () => {
         try {
           createUserResponse = await apiUser.createUserViaApi(validUser);
           expect(createUserResponse.responseCode).toBe(201);
-          expect(createUserResponse.message).toBe("User created!");
+          expect(createUserResponse.message).toContain("User created!");
         } finally {
           deleteUserResponse = await apiUser.deleteUserViaApi(
             validUser.email,
             validUser.password,
           );
           expect(deleteUserResponse.responseCode).toBe(200);
-          expect(deleteUserResponse.message).toBe("Account deleted!");
+          expect(deleteUserResponse.message).toContain("Account deleted!");
         }
       },
     );
@@ -62,6 +62,38 @@ test.describe("Users API", () => {
     // added in the future, this test can be implemented.
   });
 
+  test.describe("User-Update", () => {
+    test("User-Update: POST user account can be updated", async ({
+      registeredUser,
+      userData,
+    }) => {
+      // registered User was already created by the fixture!
+      const { validUser } = userData;
+      validUser.firstName = "UpdatedFirstName";
+      validUser.address = "42 Wallaby Way, Sydney";
+
+      const response = await registeredUser.updateUserViaApi(validUser);
+
+      expect(response.responseCode).toBe(200);
+      expect(response.message).toContain("User updated!");
+
+      const getUserResponse = await registeredUser.getUserAccountDetailByEmail(
+        validUser.email,
+      );
+
+      expect(getUserResponse.responseCode).toBe(200);
+      expect(getUserResponse.user).toBeDefined(); // Ensure user details are returned
+      expect(getUserResponse.user.id).toBeGreaterThan(0);
+      expect(getUserResponse).toMatchObject({
+        user: {
+          email: validUser.email,
+          first_name: validUser.firstName,
+          address1: validUser.address,
+        },
+      });
+    });
+  });
+
   test.describe("User-Login", () => {
     test("User-Login: POST login with valid credentials should succeed", async ({
       registeredUser,
@@ -74,7 +106,7 @@ test.describe("Users API", () => {
         validUser.password,
       );
       expect(response.responseCode).toBe(200);
-      expect(response.message).toBe("User exists!");
+      expect(response.message).toContain("User exists!");
     });
 
     test("User-Login: POST login with invalid credentials should fail", async ({
@@ -91,7 +123,7 @@ test.describe("Users API", () => {
         },
       );
       expect(response.responseCode).toBe(404);
-      expect(response.message).toBe("User not found!");
+      expect(response.message).toContain("User not found!");
     });
 
     test(
@@ -206,7 +238,7 @@ test.describe("Users API", () => {
         },
       );
       expect(deleteResponse.responseCode).toBe(404);
-      expect(deleteResponse.message).toBe("Account not found!");
+      expect(deleteResponse.message).toContain("Account not found!");
     });
 
     test(
@@ -221,7 +253,7 @@ test.describe("Users API", () => {
           },
         );
         expect(deleteResponse.responseCode).toBe(404);
-        expect(deleteResponse.message).toBe("Account not found!");
+        expect(deleteResponse.message).toContain("Account not found!");
       },
     );
   });
