@@ -136,7 +136,6 @@ export const test = base.extend({
     {
       registeredUser,
       apiUser,
-      page,
       navComponent,
       homePage,
       loginPage,

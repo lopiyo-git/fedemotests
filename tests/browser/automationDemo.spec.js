@@ -42,7 +42,7 @@ test.describe("demo tests for automation exercises website", () => {
 
   test(
     "Full user registration and account deletion journey",
-    { tag: "@skipUserRegistration" },
+    { tag: ["@skipUserRegistration", "@smoke"] },
     async ({ navigateToHomePage: _navigation, fixtures }) => {
       const {
         nav,

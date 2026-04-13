@@ -4,7 +4,7 @@ test.describe("Users API", () => {
   test.describe("User-Create", () => {
     test(
       "User-Create: POST register user account with valid details then delete account via API",
-      { tag: "@skipUserRegistration" },
+      { tag: ["@skipUserRegistration", "@smoke"] },
       async ({ userData: { validUser }, apiUser }) => {
         let deleteUserResponse;
         let createUserResponse;

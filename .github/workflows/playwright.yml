@@ -6,13 +6,14 @@ on:
       project:
         description: "Select the Playwright project/scope to run"
         required: true
-        default: "chromium"
+        default: "all"
         type: choice
         options:
           - api
           - chromium
           - firefox
           - webkit
+          - smoke
           - all
 
 jobs:
@@ -51,23 +52,21 @@ jobs:
         uses: github/codeql-action/init@v3
         with:
           languages: javascript
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run CodeQL analysis
         if: ${{ !env.ACT }}
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:javascript"
-          token: ${{ secrets.GITHUB_TOKEN }}
 
   test:
     name: Run Playwright Tests (${{ github.event.inputs.project }})
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 45 # Docker build ~5min + longest browser suite ~35min
     needs: security-scan
     permissions:
-      contents: write   # required for gh-pages publish
-      checks: write     # required for dorny/test-reporter
+      contents: write        # required for gh-pages publish
+      checks: write          # required for dorny/test-reporter
       pull-requests: write
 
     steps:
@@ -84,10 +83,17 @@ jobs:
 
       - name: Run Tests in Docker Container
         run: |
+          BASE_CMD="docker compose run --rm --remove-orphans test-runner npx playwright test"
+
           if [ "${{ github.event.inputs.project }}" = "all" ]; then
-            docker compose run --rm --remove-orphans test-runner npx playwright test
+            # Runs all projects defined in playwright.config.js
+            $BASE_CMD
+          elif [ "${{ github.event.inputs.project }}" = "smoke" ]; then
+            # Runs any test tagged with @smoke across all projects
+            $BASE_CMD --grep @smoke
           else
-            docker compose run --rm --remove-orphans test-runner npx playwright test --project=${{ github.event.inputs.project }}
+            # Standard browser/project selection (chromium, firefox, webkit, api)
+            $BASE_CMD --project=${{ github.event.inputs.project }}
           fi
         env:
           CI: true
@@ -100,8 +106,8 @@ jobs:
         with:
           name: Playwright Test Results (${{ github.event.inputs.project }})
           path: 'test-results/**/*.xml'
-          reporter: 'java-junit'   
-          fail-on-error: false     # don't fail the job if no report files found
+          reporter: 'java-junit'
+          fail-on-error: false
 
       - name: Publish HTML Report
         uses: peaceiris/actions-gh-pages@v3
@@ -109,8 +115,8 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./playwright-report
-          destination_dir: playwright-report  # avoids overwriting root gh-pages content
-          keep_files: true                    # preserves previous reports
+          destination_dir: playwright-report
+          keep_files: true
 
       - name: Upload HTML report
         uses: actions/upload-artifact@v4

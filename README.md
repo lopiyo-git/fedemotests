@@ -93,6 +93,12 @@ npx playwright test --project=api
 # Run browser tests only (all browsers)
 npx playwright test --project=chromium --project=firefox --project=webkit
 
+# Run smoke tests only
+npx playwright test --grep @smoke
+
+# Run smoke tests for a specific browser
+npx playwright test --project=chromium --grep @smoke
+
 # Interactive UI mode
 npx playwright test --ui
 ```
@@ -128,13 +134,15 @@ The framework is configured with a native GitHub Actions workflow (`.github/work
 
 ### **Workflow Trigger Logic**
 
-- **Manual On-Demand Execution:** Utilises `workflow_dispatch` to allow engineers to manually trigger the suite from the GitHub Actions tab.
+- **Manual On-Demand Execution:** Utilises `workflow_dispatch` to allow engineers to manually trigger the suite from the GitHub Actions tab with the following options:
+  - **Browser selection** — run against a specific browser (Chromium, Firefox, WebKit) or all browsers
+  - **Test scope** — run the full suite or only `@smoke` tagged tests for faster feedback loops
 
 ### **Pipeline Stages**
 
 1. **Environment Setup:** Leverages `npm ci` and Node.js 24 for deterministic dependency locking and execution parity.
 2. **On-Demand Provisioning:** Dynamically installs the required Playwright browser binaries (Chromium, Firefox, or WebKit) and OS-level dependencies.
-3. **Parametrised Execution:** Supports targeted api and browser regression (api, Chromium, Firefox, WebKit, or All) via `workflow_dispatch`, featuring a mandatory Security Orchestration gatekeeper for vulnerability and secret detection.
+3. **Parametrised Execution:** Supports targeted api and browser regression (api, Chromium, Firefox, WebKit, or All) via `workflow_dispatch`, with an optional `@smoke` tag filter for rapid pre-release validation. Features a mandatory Security Orchestration gatekeeper for vulnerability and secret detection.
 4. **Artifact Retention:** Automatically captures and stores HTML reports and failure traces for 14 days to facilitate post-mortem analysis.
 5. **Containerised Orchestration:** Executes the functional test suite within a security-hardened Docker container via docker-compose, guaranteeing 1:1 environment parity and eliminating "it works on my machine" flakiness.
 
