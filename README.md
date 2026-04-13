@@ -1,6 +1,6 @@
 # FEDEMOTESTS: Modern Quality Orchestration Architecture
 
-![Playwright Tests](https://github.com/lopiyo-git/fedemotests/actions/workflows/playwright.yml/badge.svg)
+![Playwright Tests](https://github.com/lopiyo-git/fedemotests/actions/workflows/playwright.yml/badge.svg)[![Test Report](https://img.shields.io/badge/Test%20Report-View-blue)](https://lopiyo-git.github.io/fedemotests/playwright-report/)
 
 ### AI Usage
 
