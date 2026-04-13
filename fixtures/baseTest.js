@@ -1,9 +1,7 @@
 import { test as base, expect } from "@playwright/test";
 import * as Pages from "../pages/";
-import { blockAds } from "../utils/blockAds";
-import { ApiAuthHelper } from "../utils/ApiAuthHelper";
-import { users } from "../testData/users";
-import { paymentInfo } from "../testData/paymentInfo";
+import { blockAds, ApiAuthHelper } from "../utils";
+import { users, paymentInfo } from "../testData";
 
 export const test = base.extend({
   // Test Data Fixtures

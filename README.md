@@ -47,10 +47,11 @@ The structure follows a modular "Squad-ready" design with a clear separation bet
 
 ### Project Configuration
 
-The Playwright config defines separate projects to ensure API tests run **once** while browser tests run across all configured browsers:
+The Playwright config defines separate projects to ensure API tests run **once** while browser tests run across all configured browsers. Execution scope is also demonstrated by use of Playwright @tags:
 
 - **`api` project** — targets `tests/api/` with no browser device, runs once per pipeline execution
 - **`chromium`, `firefox`, `webkit` projects** — target `tests/browser/` only, each runs the full UI suite
+- **`@smoke` in some tests** run only tests marked with this tag.
 
 ## Key Engineering Patterns
 
