@@ -136,8 +136,8 @@ The framework is configured with a native GitHub Actions workflow (`.github/work
 ### **Workflow Trigger Logic**
 
 - **Manual On-Demand Execution:** Utilises `workflow_dispatch` to allow engineers to manually trigger the suite from the GitHub Actions tab with the following options:
-  - **Browser selection** — run against a specific browser (Chromium, Firefox, WebKit) or all browsers
-  - **Test scope** — run the full suite or only `@smoke` tagged tests for faster feedback loops
+  - **Browser and api selection** — run against a specific browser (Chromium, Firefox, WebKit), api or all tests.
+  - **Test scope** — run the full suite or only `@smoke` tagged tests for faster feedback loops.
 
 ### **Pipeline Stages**
 
