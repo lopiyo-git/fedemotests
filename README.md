@@ -20,7 +20,7 @@ Aligned with enterprise-grade standards, this framework implements:
 - **Automated Security Guardrails:** Integrated DevSecOps practices within the CI/CD pipeline, ensuring every build is audited for vulnerabilities and exposure before testing begins.
 - **Playwright Fixtures:** Utilizes custom fixtures (`baseTest.js`) for dependency injection, providing an isolated, clean state for every test and reducing setup overhead.
 - **Idempotent Test Design:** Implemented end-to-end (E2E) user lifecycles (Registration → Navigation → Deletion) that handle their own data cleanup.
-- **CI/CD & DevOps Readiness:** Integrated with GitHub Actions for automated regression on every push/PR, alongside a local Docker Compose workflow for environment parity.
+- **CI/CD & DevOps Readiness:** Integrated with GitHub Actions for manual trigger for now though this can be automated for regression on every push/PR, alongside a local Docker Compose workflow for environment parity.
 
 ## Framework Architecture
 
@@ -155,4 +155,4 @@ For inquiries regarding this framework or professional opportunities, please rea
 
 [![Email](https://img.shields.io/badge/Email-lopiyo14%40gmail.com-D14836?style=flat-square&logo=gmail&logoColor=white)](mailto:lopiyo14@gmail.com)
 
-**Author:** [lopiyo-git](https://github.com/lopiyo-git)
+**Author:** [Lawrence Opiyo](https://github.com/lopiyo-git)
