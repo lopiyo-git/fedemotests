@@ -8,3 +8,4 @@ export * from "./ViewCartPage";
 export * from "./CheckoutPage";
 export * from "./PaymentPage";
 export * from "./OrderPlacedPage";
+export * from "./ContactUsPage";

@@ -8,4 +8,5 @@ export const urlPatterns = {
   checkoutUrl: /checkout/,
   paymentUrl: /\/payment$/,
   orderPlacedUrl: /payment_done/,
+  contactUsUrl: /contact_us/,
 };

@@ -1,6 +1,15 @@
 import { test, expect } from "../../fixtures/baseTest";
+import {
+  loginAsUser,
+  verifyHomePageLoaded,
+  signUpNewUser,
+  addProductsToCart,
+} from "./testWorkflows";
 
 test.describe("demo tests for automation exercises website", () => {
+  test.beforeAll(async ({}) => {
+    console.log("Running setup before all tests in this suite");
+  });
   test("Complete checkout flow for authenticated user", async ({
     navigateToHomePage: _navigation,
     fixtures,
@@ -17,14 +26,8 @@ test.describe("demo tests for automation exercises website", () => {
       paymentData,
     } = fixtures;
 
-    //user registered via api and account deleted via api
-    await nav.clickSignUpLogin();
-    await login.waitForLoad();
-    await login.login(validUser.email, validUser.password);
-    await home.waitForLoad();
-    await nav.verifyUserIsLoggedIn();
-    await home.addProductToCart("Blue Top");
-    await home.addProductToCart("Men Tshirt");
+    await loginAsUser(login, home, nav, validUser);
+    await addProductsToCart(home, ["Blue Top", "Men Tshirt"]);
     await nav.navigateToCart();
     await cart.waitForCartToLoadWithItems();
     await cart.proceedToCheckout();
@@ -35,9 +38,7 @@ test.describe("demo tests for automation exercises website", () => {
     await payment.confirmPayment();
     await orderPlaced.waitForLoad();
     await orderPlaced.clickContinue();
-    await home.waitForLoad();
-    await nav.verifyUserIsLoggedIn();
-    await expect(home.locators.featuresItemsHeading).toBeVisible();
+    await verifyHomePageLoaded(home);
   });
 
   test(
@@ -54,15 +55,7 @@ test.describe("demo tests for automation exercises website", () => {
         userData: { validUser },
       } = fixtures;
 
-      await nav.clickSignUpLogin();
-      await login.waitForLoad();
-      await login.signUp(
-        `${validUser.firstName} ${validUser.lastName}`,
-        validUser.email,
-      );
-      await signup.waitForLoad();
-      await signup.enterSignUpInformation(validUser);
-      await signup.clickCreateAccount();
+      await signUpNewUser(login, nav, signup, validUser);
       await accountCreated.waitForLoad();
       await accountCreated.clickContinue();
       await nav.verifyUserIsLoggedIn();
@@ -72,7 +65,33 @@ test.describe("demo tests for automation exercises website", () => {
       await deleteAccount.clickContinue();
       await home.waitForLoad();
       await expect(nav.locators.signUpLoginLink).toBeVisible();
-      await expect(home.locators.featuresItemsHeading).toBeVisible();
+      await verifyHomePageLoaded(home);
     },
   );
+
+  test("Contact us form submission", async ({
+    navigateToHomePage: _navigation,
+    fixtures,
+  }) => {
+    const {
+      nav,
+      home,
+      login,
+      contactUs,
+      userData: { validUser },
+    } = fixtures;
+
+    await loginAsUser(login, home, nav, validUser);
+    await nav.navigateToContactUs();
+    await contactUs.waitForLoad();
+    await contactUs.fillContactForm({
+      name: "Tests",
+      email: "test@example.com",
+      subject: "Subject",
+      message: "test message",
+      filePath: "testData/files/submit.txt",
+    });
+    await contactUs.submitForm();
+    await expect(contactUs.locators.successMessage).toBeVisible();
+  });
 });

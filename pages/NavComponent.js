@@ -15,6 +15,7 @@ class NavLocators {
       name: "Delete Account",
     });
     this.cartLink = this.page.getByRole("link", { name: /Cart/ });
+    this.contactUsLink = this.page.getByRole("link", { name: /Contact us/ });
   }
 }
 
@@ -45,6 +46,11 @@ class NavComponent {
   async navigateToCart() {
     await this.locators.cartLink.click();
     await expect(this.page).toHaveURL(urlPatterns.cartUrl);
+  }
+
+  async navigateToContactUs() {
+    await this.locators.contactUsLink.click();
+    await expect(this.page).toHaveURL(urlPatterns.contactUsUrl);
   }
 }
 

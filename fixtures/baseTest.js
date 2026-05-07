@@ -111,6 +111,11 @@ export const test = base.extend({
     await use(new Pages.OrderPlacedPage(page));
   },
 
+  /** @type {ContactUsPage} */
+  contactUsPage: async ({ page }, use) => {
+    await use(new Pages.ContactUsPage(page));
+  },
+
   /**
    * Bundled fixture — all page objects and test data in one place.
    * Keeps test signatures concise without losing individual fixture reusability.
@@ -126,6 +131,7 @@ export const test = base.extend({
    *   checkout: CheckoutPage,
    *   payment: PaymentPage,
    *   orderPlaced: OrderPlacedPage,
+   *   contactUs: ContactUsPage,
    *   userData: import('../testData/users').users,
    *   paymentData: paymentInfo,
    * }}
@@ -146,6 +152,7 @@ export const test = base.extend({
       orderPlacedPage,
       userData,
       paymentData,
+      contactUsPage,
     },
     use,
   ) => {
@@ -162,6 +169,7 @@ export const test = base.extend({
       checkout: checkoutPage,
       payment: paymentPage,
       orderPlaced: orderPlacedPage,
+      contactUs: contactUsPage,
       userData,
       paymentData,
     });
