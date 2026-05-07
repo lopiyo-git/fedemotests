@@ -15,6 +15,11 @@ on:
           - webkit
           - smoke
           - all
+      local_test:
+        description: "Running locally via act (skips GitHub-only steps)"
+        required: false
+        default: "false"
+        type: boolean
 
 jobs:
   security-scan:
@@ -27,8 +32,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -48,26 +51,22 @@ jobs:
           ./gitleaks detect --source . --verbose
 
       - name: Initialize CodeQL
-        if: ${{ !env.ACT }}
+        if: github.event.inputs.local_test != 'true'
         uses: github/codeql-action/init@v3
         with:
           languages: javascript
 
       - name: Run CodeQL analysis
-        if: ${{ !env.ACT }}
+        if: github.event.inputs.local_test != 'true'
         uses: github/codeql-action/analyze@v3
-        with:
-          category: "/language:javascript"
 
-  test:
-    name: Run Playwright Tests (${{ github.event.inputs.project }})
+  docker-scan:
+    name: Docker Image Security Scan
     runs-on: ubuntu-latest
-    timeout-minutes: 45 # Docker build ~5min + longest browser suite ~35min
     needs: security-scan
     permissions:
-      contents: write        # required for gh-pages publish
-      checks: write          # required for dorny/test-reporter
-      pull-requests: write
+      security-events: write
+      contents: read
 
     steps:
       - name: Checkout repository
@@ -75,6 +74,42 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        run: docker compose build test-runner
+        env:
+          DOCKER_BUILDKIT: 1
+
+      - name: Scan Docker image for CVEs with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: fedemotests-test-runner:latest
+          format: sarif
+          output: trivy-image-results.sarif
+          severity: CRITICAL,HIGH
+          exit-code: "1"
+          ignore-unfixed: true
+          trivyignores: .trivyignore
+
+      - name: Upload Trivy image scan results
+        if: github.event.inputs.local_test != 'true'
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-image-results.sarif
+
+  test:
+    name: Run Playwright Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    needs: [security-scan, docker-scan]
+    permissions:
+      contents: write
+      checks: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Create output directories
         run: |
@@ -84,45 +119,22 @@ jobs:
       - name: Run Tests in Docker Container
         run: |
           BASE_CMD="docker compose run --rm --remove-orphans test-runner npx playwright test"
-
-          if [ "${{ github.event.inputs.project }}" = "all" ]; then
-            # Runs all projects defined in playwright.config.js
+          if [ "$PROJECT" = "all" ]; then
             $BASE_CMD
-          elif [ "${{ github.event.inputs.project }}" = "smoke" ]; then
-            # Runs any test tagged with @smoke across all projects
+          elif [ "$PROJECT" = "smoke" ]; then
             $BASE_CMD --grep @smoke
           else
-            # Standard browser/project selection (chromium, firefox, webkit, api)
-            $BASE_CMD --project=${{ github.event.inputs.project }}
+            $BASE_CMD --project="$PROJECT"
           fi
         env:
           CI: true
-          COMPOSE_DOCKER_CLI_BUILD: 1
-          DOCKER_BUILDKIT: 1
-
-      - name: Test Report
-        uses: dorny/test-reporter@v1
-        if: always()
-        with:
-          name: Playwright Test Results (${{ github.event.inputs.project }})
-          path: 'test-results/**/*.xml'
-          reporter: 'java-junit'
-          fail-on-error: false
-
-      - name: Publish HTML Report
-        uses: peaceiris/actions-gh-pages@v3
-        if: always()
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./playwright-report
-          destination_dir: playwright-report
-          keep_files: true
+          PROJECT: ${{ github.event.inputs.project }}
 
       - name: Upload HTML report
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: playwright-report-${{ github.event.inputs.project }}
+          name: playwright-report
           path: |
             playwright-report/
             test-results/

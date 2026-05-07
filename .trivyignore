@@ -1,0 +1,18 @@
+# .trivyignore
+
+# The following CVEs are in npm's own bundled internal tooling
+# (usr/lib/node_modules/npm/) inside the Node base image.
+# They are NOT in application code and are not exploitable
+# in this CI/test runner context.
+# Review when upgrading the Playwright base image.
+
+# minimatch - ReDoS via recursive backtracking
+CVE-2026-27903
+CVE-2026-27904
+
+# picomatch - ReDoS via extglob patterns
+CVE-2026-33671
+
+# node-tar - path traversal and file overwrite
+CVE-2026-29786
+CVE-2026-31802
