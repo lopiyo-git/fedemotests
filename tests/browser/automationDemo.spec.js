@@ -1,4 +1,5 @@
 import { test, expect } from "../../fixtures/baseTest";
+import { filePaths } from "../../testData/filePaths";
 import {
   loginAsUser,
   verifyHomePageLoaded,
@@ -89,7 +90,7 @@ test.describe("demo tests for automation exercises website", () => {
       email: "test@example.com",
       subject: "Subject",
       message: "test message",
-      filePath: "testData/files/submit.txt",
+      filePath: filePaths.submitForm,
     });
     await contactUs.submitForm();
     await expect(contactUs.locators.successMessage).toBeVisible();
