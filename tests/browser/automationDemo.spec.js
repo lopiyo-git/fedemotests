@@ -8,9 +8,6 @@ import {
 } from "./testWorkflows";
 
 test.describe("demo tests for automation exercises website", () => {
-  test.beforeAll(async ({}) => {
-    console.log("Running setup before all tests in this suite");
-  });
   test("Complete checkout flow for authenticated user", async ({
     navigateToHomePage: _navigation,
     fixtures,
