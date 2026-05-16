@@ -155,4 +155,4 @@ For inquiries regarding this framework or professional opportunities, please rea
 
 [![Email](https://img.shields.io/badge/Email-lopiyo14%40gmail.com-D14836?style=flat-square&logo=gmail&logoColor=white)](mailto:lopiyo14@gmail.com)
 
-**Author:** [Lawrence Opiyo](https://github.com/lopiyo-git)
+**Author:** [Lawrence Opiyo](https://www.linkedin.com/in/lawrence-opiyo-sdet/)
